@@ -1,0 +1,75 @@
+name: PR 3150 Docker benchmark
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/pr3150-docker-benchmark.yml
+      - scripts/pr3150_docker_benchmark.sh
+      - scripts/pr3150_docker_benchmark.compose.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr3150-docker-benchmark
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    if: >-
+      github.repository == 'Humpalumps/world-of-claudecraft' &&
+      github.head_ref == 'codex/pr3150-docker-benchmark'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out benchmark controller
+        uses: actions/checkout@v4
+        with:
+          path: control
+          persist-credentials: false
+
+      - name: Check out current live v0.35.1
+        uses: actions/checkout@v4
+        with:
+          repository: levy-street/world-of-claudecraft
+          ref: 7e8c2c3cd8136242a2d8ff29c376dd2bef66f849
+          path: live
+          persist-credentials: false
+
+      - name: Check out improved PR revision
+        uses: actions/checkout@v4
+        with:
+          repository: Humpalumps/world-of-claudecraft
+          ref: e06e8be7fa7dee51162c082ae980eb303645ddb0
+          path: improved
+          persist-credentials: false
+
+      - name: Record runner environment
+        run: |
+          mkdir -p control/results
+          {
+            uname -a
+            lscpu
+            free -h
+            docker version
+            docker compose version
+          } | tee control/results/runner-environment.txt
+
+      - name: Build both production Docker images and benchmark harness
+        run: |
+          docker build --pull --progress=plain -t woc-live:7e8c2c3 live
+          docker build --pull --progress=plain -t woc-improved:e06e8be7 improved
+          docker build --target build --progress=plain -t woc-bench-harness:e06e8be7 improved
+
+      - name: Run three alternating 60-player trials per image
+        run: bash control/scripts/pr3150_docker_benchmark.sh
+
+      - name: Upload raw benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr3150-docker-benchmark-${{ github.run_id }}
+          path: control/results
+          if-no-files-found: error
+          retention-days: 30

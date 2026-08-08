@@ -1,0 +1,9 @@
+services:
+  game:
+    image: ${BENCH_IMAGE:?Set BENCH_IMAGE}
+    environment:
+      ALLOW_DEV_COMMANDS: "1"
+      PERF_TICK_LOG: "1"
+      MAX_WS_PER_IP_HARD: "128"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      WOC_BUILD_VERSION: ${BENCH_VERSION:-benchmark}
