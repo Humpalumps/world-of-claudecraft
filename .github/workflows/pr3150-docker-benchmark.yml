@@ -7,6 +7,7 @@ on:
       - .github/workflows/pr3150-docker-benchmark.yml
       - scripts/pr3150_docker_benchmark.sh
       - scripts/pr3150_docker_benchmark.compose.yml
+      - scripts/pr3150_docker_harness.Dockerfile
 
 permissions:
   contents: read
@@ -60,7 +61,10 @@ jobs:
         run: |
           docker build --pull --progress=plain -t woc-live:7e8c2c3 live
           docker build --pull --progress=plain -t woc-improved:e06e8be7 improved
-          docker build --target build --progress=plain -t woc-bench-harness:e06e8be7 improved
+          mkdir -p harness-context/scripts/lib
+          cp improved/scripts/server_load_jitter.mjs harness-context/scripts/
+          cp improved/scripts/lib/bench_gate.mjs improved/scripts/lib/world_auth.mjs harness-context/scripts/lib/
+          docker build --progress=plain -f control/scripts/pr3150_docker_harness.Dockerfile -t woc-bench-harness:e06e8be7 harness-context
 
       - name: Run three alternating 60-player trials per image
         run: bash control/scripts/pr3150_docker_benchmark.sh
