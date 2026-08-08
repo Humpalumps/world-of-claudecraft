@@ -11,6 +11,8 @@ COMPOSE_PROJECT_NAME="woc-pr3150-bench"
 export POSTGRES_PASSWORD="benchmark-only-not-production"
 export NODE_OPTIONS="--max-old-space-size=4096"
 export MAX_PLAYERS_PER_REALM="200"
+export BENCH_IMAGE="woc-live:7e8c2c3"
+export BENCH_VERSION="cleanup"
 
 compose() {
   docker compose \
@@ -66,6 +68,8 @@ run_trial() {
   cleanup_stack
   rm -rf "$scratch"
   mkdir -p "$scratch/media" "$scratch/sfx" "$scratch/parse"
+  chmod 0777 "$scratch/media" "$scratch/parse"
+  chmod 0755 "$scratch/sfx"
 
   export BENCH_IMAGE="$image"
   export BENCH_VERSION="$version"
