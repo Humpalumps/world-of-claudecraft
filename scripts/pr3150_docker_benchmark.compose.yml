@@ -3,6 +3,7 @@ services:
     image: ${BENCH_IMAGE:?Set BENCH_IMAGE}
     environment:
       ALLOW_DEV_COMMANDS: "1"
+      REQUIRE_WEB_LOGIN: "0"
       PERF_TICK_LOG: "1"
       MAX_WS_PER_IP_HARD: "128"
       NODE_OPTIONS: "--max-old-space-size=4096"
