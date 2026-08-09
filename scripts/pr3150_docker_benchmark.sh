@@ -96,7 +96,7 @@ run_trial() {
     --env RAMP_MS=40 \
     --env OBSERVER=1 \
     --env JSON_OUT="/results/${label}-${trial}.json" \
-    woc-bench-harness:8de7fcc \
+    woc-bench-harness:5b38c5a \
     node scripts/server_load_jitter.mjs || load_rc=$?
 
   kill "$stats_pid" 2>/dev/null || true
@@ -117,11 +117,11 @@ trap cleanup_stack EXIT
 mkdir -p "$RESULTS_DIR"
 
 run_trial live woc-live:7e8c2c3 7e8c2c3cd8136242a2d8ff29c376dd2bef66f849 1
-run_trial improved woc-improved:8de7fcc 8de7fcc05f5804cb5e0fff397a9fe62531d498f4 1
+run_trial improved woc-improved:5b38c5a 5b38c5aa088c1aa5341cc6c17b45b03a2afc7a47 1
 run_trial live woc-live:7e8c2c3 7e8c2c3cd8136242a2d8ff29c376dd2bef66f849 2
-run_trial improved woc-improved:8de7fcc 8de7fcc05f5804cb5e0fff397a9fe62531d498f4 2
+run_trial improved woc-improved:5b38c5a 5b38c5aa088c1aa5341cc6c17b45b03a2afc7a47 2
 run_trial live woc-live:7e8c2c3 7e8c2c3cd8136242a2d8ff29c376dd2bef66f849 3
-run_trial improved woc-improved:8de7fcc 8de7fcc05f5804cb5e0fff397a9fe62531d498f4 3
+run_trial improved woc-improved:5b38c5a 5b38c5aa088c1aa5341cc6c17b45b03a2afc7a47 3
 
 trap - EXIT
 cleanup_stack

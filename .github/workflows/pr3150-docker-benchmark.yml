@@ -42,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Humpalumps/world-of-claudecraft
-          ref: 8de7fcc05f5804cb5e0fff397a9fe62531d498f4
+          ref: 5b38c5aa088c1aa5341cc6c17b45b03a2afc7a47
           path: improved
           persist-credentials: false
 
@@ -60,11 +60,11 @@ jobs:
       - name: Build both production Docker images and benchmark harness
         run: |
           docker build --pull --progress=plain -t woc-live:7e8c2c3 live
-          docker build --pull --progress=plain -t woc-improved:8de7fcc improved
+          docker build --pull --progress=plain -t woc-improved:5b38c5a improved
           mkdir -p harness-context/scripts/lib
           cp improved/scripts/server_load_jitter.mjs harness-context/scripts/
           cp improved/scripts/lib/bench_gate.mjs improved/scripts/lib/world_auth.mjs harness-context/scripts/lib/
-          docker build --progress=plain -f control/scripts/pr3150_docker_harness.Dockerfile -t woc-bench-harness:8de7fcc harness-context
+          docker build --progress=plain -f control/scripts/pr3150_docker_harness.Dockerfile -t woc-bench-harness:5b38c5a harness-context
 
       - name: Run three alternating 60-player trials per image
         run: bash control/scripts/pr3150_docker_benchmark.sh
